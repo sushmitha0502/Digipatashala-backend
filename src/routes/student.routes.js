@@ -1,66 +1,121 @@
-import {Router} from "express";
-import {signup, mailVerified, login,logout, addStudentDetails, getStudent, forgetPassword, resetPassword } from "../controllers/student.controller.js";
-import {upload} from "../middlewares/multer.middleware.js"
-import {authSTD} from "../middlewares/stdAuth.middleware.js"
-import { authSchema } from "../middlewares/joiLogin.middleware.js";
-const router = Router()
+// import {Router} from "express";
+// import {signup, mailVerified, login,logout, addStudentDetails, getStudent, forgetPassword, resetPassword } from "../controllers/student.controller.js";
+// import {upload} from "../middlewares/multer.middleware.js"
+// import {authSTD} from "../middlewares/stdAuth.middleware.js"
+// import { authSchema } from "../middlewares/joiLogin.middleware.js";
+// const router = Router()
 
-router.post("/register", signup);
-router.route("/signup").post(
-    signup
-)
+// router.post("/register", signup);
+// router.route("/signup").post(
+//     signup
+// )
 
-router.route("/verify").get(
-    mailVerified
-)
+// router.route("/verify").get(
+//     mailVerified
+// )
 
-router.route("/login").post(
-    authSchema, login
-)
+// router.route("/login").post(
+//     authSchema, login
+// )
 
-router.route("/logout").post(authSTD, logout)
+// router.route("/logout").post(authSTD, logout)
 
-router.route("/Verification/:id").post(authSTD,
-    upload.fields([
-        {
-            name:"Aadhaar",
-            maxCount:1,
-        },
-        {
-            name:"Secondary",
-            maxCount:1,
-        },
-        {
-            name:"Higher",
-            maxCount:1
-        }
-    ]) ,
-    addStudentDetails)
+// router.route("/Verification/:id").post(authSTD,
+//     upload.fields([
+//         {
+//             name:"Aadhaar",
+//             maxCount:1,
+//         },
+//         {
+//             name:"Secondary",
+//             maxCount:1,
+//         },
+//         {
+//             name:"Higher",
+//             maxCount:1
+//         }
+//     ]) ,
+//     addStudentDetails)
 
-router.route("/verification/:id").post(authSTD,
-    upload.fields([
-        {
-            name:"Aadhaar",
-            maxCount:1,
-        },
-        {
-            name:"Secondary",
-            maxCount:1,
-        },
-        {
-            name:"Higher",
-            maxCount:1
-        }
-    ]) ,
-    addStudentDetails)
+// router.route("/verification/:id").post(authSTD,
+//     upload.fields([
+//         {
+//             name:"Aadhaar",
+//             maxCount:1,
+//         },
+//         {
+//             name:"Secondary",
+//             maxCount:1,
+//         },
+//         {
+//             name:"Higher",
+//             maxCount:1
+//         }
+//     ]) ,
+//     addStudentDetails)
      
-router.route("/StudentDocument/:id").get(authSTD, getStudent)
-router.route("/studentdocument/:id").get(authSTD, getStudent)
+// router.route("/StudentDocument/:id").get(authSTD, getStudent)
+// router.route("/studentdocument/:id").get(authSTD, getStudent)
 
-router.route('/forgetpassword').post(forgetPassword)
+// router.route('/forgetpassword').post(forgetPassword)
 
-router.route('/forgetpassword/:token').post(resetPassword)
+// router.route('/forgetpassword/:token').post(resetPassword)
 
 
+
+// export default router;
+
+
+import { Router } from "express";
+import {
+  signup,
+  mailVerified,
+  login,
+  logout,
+  addStudentDetails,
+  getStudent,
+  forgetPassword,
+  resetPassword
+} from "../controllers/student.controller.js";
+
+import { upload } from "../middlewares/multer.middleware.js";
+import { authSTD } from "../middlewares/stdAuth.middleware.js";
+import { authSchema } from "../middlewares/joiLogin.middleware.js";
+
+const router = Router();
+
+// ✅ AUTH ROUTES
+router.post("/register", signup);
+router.post("/signup", signup);
+router.get("/verify", mailVerified);
+
+// ✅ LOGIN (important route)
+router.post("/login", authSchema, login);
+
+// ✅ LOGOUT
+router.post("/logout", authSTD, logout);
+
+// ✅ DOCUMENT UPLOAD
+router.post(
+  "/verification/:id",
+  authSTD,
+  upload.fields([
+    { name: "Aadhaar", maxCount: 1 },
+    { name: "Secondary", maxCount: 1 },
+    { name: "Higher", maxCount: 1 }
+  ]),
+  addStudentDetails
+);
+
+// (Removed duplicate route "/Verification/:id")
+
+// ✅ GET STUDENT
+router.get("/studentdocument/:id", authSTD, getStudent);
+
+// (Removed duplicate "/StudentDocument/:id")
+
+// ✅ PASSWORD
+router.post("/forgetpassword", forgetPassword);
+router.post("/forgetpassword/:token", resetPassword);
 
 export default router;
